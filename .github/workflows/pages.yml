@@ -2,8 +2,12 @@
 name: GitHub Pages
 
 on:
-  push:
-    branches: main
+  
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'release'
   workflow_dispatch:
 
 permissions:
@@ -17,6 +21,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,6 +50,7 @@ jobs:
 
   # Deployment job
   deploy:
+    if: github.event.pull_request.merged == true
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
